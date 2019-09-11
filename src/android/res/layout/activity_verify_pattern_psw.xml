@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/shape_gradient">
+
+        <ImageView
+            android:id="@+id/tv_setting_back"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:paddingLeft="15dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/btn_left_off" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="验证手势密码"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+
+    </RelativeLayout>
+
+
+    <org.apache.cordova.gesture.ChaosGestureView
+        android:id="@+id/gesture_setting"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="24dp"
+        android:layout_weight="1"
+        app:minPoint="5"
+        app:stateFlag="102"
+        app:panelHeight="400"
+        app:paintColor="@color/bak_blue"
+        app:paintTextSize="15sp"
+        app:selectedBitmap="@mipmap/icon_finger_selected"
+        app:selectedBitmapSmall="@mipmap/icon_finger_selected_small"
+        app:unselectedBitmap="@mipmap/icon_finger_unselected"
+        app:unselectedBitmapSmall="@mipmap/icon_finger_unselected_new" />
+
+</LinearLayout>
