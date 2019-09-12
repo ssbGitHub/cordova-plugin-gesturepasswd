@@ -5,8 +5,8 @@ exports.gesturescreen = {
         exec(successVerity, errorVerity, 'GesturePasswd', 'showVerify', []);
     },
 
-    hideVerify: function () {
-        exec(null, null, "GesturePasswd", "hideVerify", []);
+    hideVerify: function (hideSuccess) {
+        exec(hideSuccess, null, "GesturePasswd", "hideVerify", []);
     },
 
     showSetting: function (successSetting, errorSetting) {

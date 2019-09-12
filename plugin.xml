@@ -18,15 +18,22 @@
         <source-file src="src/android/AlertUtil.java" target-dir="src/org/apache/cordova/gesture" />
         <source-file src="src/android/ChaosGestureView.java" target-dir="src/org/apache/cordova/gesture" />
         <source-file src="src/android/GestureToast.java" target-dir="src/org/apache/cordova/gesture" />
+		<source-file src="src/android/ProgressAnimAlert.java" target-dir="src/org/apache/cordova/gesture" />
 		
 		<resource-file src="src/android/res/anim/right_menu_enter.xml" target="res/anim/right_menu_enter.xml" />
 		<resource-file src="src/android/res/anim/right_menu_exit.xml" target="res/anim/right_menu_exit.xml" />
 						
 		<resource-file src="src/android/res/drawable/btn_left_off.png" target="res/drawable/btn_left_off.png" />
         <resource-file src="src/android/res/drawable/icon_logo.png" target="res/drawable/icon_logo.png" />
+		<resource-file src="src/android/res/drawable/new_progress1.png" target="res/drawable/new_progress1.png" />
+		<resource-file src="src/android/res/drawable/new_progress2.png" target="res/drawable/new_progress2.png" />
+		<resource-file src="src/android/res/drawable/new_progress3.png" target="res/drawable/new_progress3.png" />
+		<resource-file src="src/android/res/drawable/new_progress4.png" target="res/drawable/new_progress4.png" />
+		<resource-file src="src/android/res/drawable/progress_alert_anim.xml" target="res/drawable/progress_alert_anim.xml" />
         <resource-file src="src/android/res/drawable/shape_gradient.xml" target="res/drawable/shape_gradient.xml" />
         <resource-file src="src/android/res/drawable/textview_cricle_white.xml" target="res/drawable/textview_cricle_white.xml" />
         <resource-file src="src/android/res/drawable/tips_bg.xml" target="res/drawable/tips_bg.xml" />
+		
 		<resource-file src="src/android/res/drawable-hdpi/btn_left_off.png" target="res/drawable-hdpi/btn_left_off.png" />
 		<resource-file src="src/android/res/drawable-xxhdpi/btn_left_off.png" target="res/drawable-xxhdpi/btn_left_off.png" />
 		
@@ -34,6 +41,7 @@
         <resource-file src="src/android/res/layout/activity_close_pattern_psw.xml" target="res/layout/activity_close_pattern_psw.xml" />
         <resource-file src="src/android/res/layout/activity_setting_pattern_psw.xml" target="res/layout/activity_setting_pattern_psw.xml" />
         <resource-file src="src/android/res/layout/activity_verify_pattern_psw.xml" target="res/layout/activity_verify_pattern_psw.xml" />
+		<resource-file src="src/android/res/layout/progress_alert_layout.xml" target="res/layout/progress_alert_layout.xml" />
 		<resource-file src="src/android/res/layout/view_toast.xml" target="res/layout/view_toast.xml" />
 
         <resource-file src="src/android/res/mipmap-xxxhdpi/icon_finger_selected.png" target="res/mipmap-xxxhdpi/icon_finger_selected.png" />

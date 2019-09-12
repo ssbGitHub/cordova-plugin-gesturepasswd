@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,6 +45,10 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
     private TextView passwdLoginId = null;
     private TextView hintLoginInfo = null;
 
+    private ProgressAnimAlert progressAnim = null;
+
+    private static final int TIMER = 999;
+
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -65,20 +71,33 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
             String msg = args.getString(0);
             loginFail(msg);
             return true;
-        } else if (action.equals("hideLogin") || action.equals("hideSetting") || action.equals("hideVerify")) {
-            removeGestureScreen();
+        } else if (action.equals("hideLogin") || action.equals("hideSetting")) {
+            removeGestureScreen(false);
+            return true;
+        } else if (action.equals("hideVerify")) {
+            this.callbackContext = callbackContext;
+            removeGestureScreen(true);
             return true;
         }
         return false;
     }
 
     private void loginFail(String msg) {
+        boolean isColor;
+        if (!"LOGIN_ING".equals(msg)) {
+            dismissProgress();
+            isColor = true;
+        } else {
+            msg = "登录中请稍后...";
+            isColor = false;
+        }
+
         if (gestureView != null) {
             gestureView.resetGesture(msg, false);
         }
 
         if (hintLoginInfo != null) {
-            hintLoginInfo.setTextColor(Color.RED);
+            hintLoginInfo.setTextColor(isColor ? Color.RED : webView.getContext().getResources().getColor(R.color.bak_blue));
             hintLoginInfo.setText(msg);
         }
     }
@@ -109,7 +128,7 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
                 tv_back.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGestureScreen();
+                        removeGestureScreen(false);
                     }
                 });
 
@@ -153,7 +172,7 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
                 tv_back.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        removeGestureScreen();
+                        removeGestureScreen(false);
                     }
                 });
 
@@ -183,7 +202,7 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
                         if (event.getAction() == KeyEvent.ACTION_UP
                                 && keyCode == KeyEvent.KEYCODE_BACK) {
                             callbackContext.error("KEYCODE_BACK");
-                            removeGestureScreen();
+                            removeGestureScreen(false);
                             return true;
                         } else {
                             return true;
@@ -264,6 +283,8 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
                 gestureDialog.setCanceledOnTouchOutside(true);
                 gestureDialog.show();
 
+                progressAnim = new ProgressAnimAlert(webView.getContext());
+
                 Window window = gestureDialog.getWindow();
                 window.setWindowAnimations(R.style.right_menu_animation);  //添加动画
 
@@ -273,7 +294,7 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
                         if (event.getAction() == KeyEvent.ACTION_UP
                                 && keyCode == KeyEvent.KEYCODE_BACK) {
                             callbackContext.error("KEYCODE_BACK");
-                            removeGestureScreen();
+                            removeGestureScreen(false);
                             return true;
                         } else {
                             return true;
@@ -284,10 +305,16 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
         });
     }
 
-    private void removeGestureScreen() {
+    private void removeGestureScreen(boolean isHide) {
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 if (gestureDialog != null && gestureView != null && gestureDialog.isShowing()) {
+
+                    if (isHide) {
+                        callbackContext.success();
+                    }
+
+                    dismissProgress();
                     gestureDialog.dismiss();
                     gestureDialog = null;
                     tv_back = null;
@@ -304,12 +331,23 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
 
     @Override
     public void gestureVerifySuccessListener(int stateFlag, List<ChaosGestureView.GestureBean> data, boolean success) {
-
         if (stateFlag == ChaosGestureView.STATE_LOGIN) {
-            JSONArray json= new JSONArray();
-            json.put(getGesturePwd(data));
+            String pwd = getGesturePwd(data);
+
+            if (pwd.length() <= 0) {
+                return;
+            }
+
+            JSONArray json = new JSONArray();
+            json.put(pwd);
             json.put(redirect);
 
+            if (hintLoginInfo != null) {
+                hintLoginInfo.setTextColor(webView.getContext().getResources().getColor(R.color.bak_blue));
+                hintLoginInfo.setText("登录中请稍后...");
+            }
+
+            showProgress();
             callbackContext.success(json);
         } else if (stateFlag == ChaosGestureView.STATE_REGISTER) {
             callbackContext.success(getGesturePwd(data));
@@ -348,4 +386,33 @@ public class GesturePasswd extends CordovaPlugin implements ChaosGestureView.Ges
             decorView.setSystemUiVisibility(uiOptions & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
+
+    private void showProgress() {
+        if (progressAnim != null) {
+            progressAnim.show();
+            mHandler.sendEmptyMessageDelayed(TIMER, 1000 * 20);
+        }
+    }
+
+    private void dismissProgress() {
+        if (progressAnim != null) {
+            progressAnim.dismiss();
+            mHandler.removeMessages(TIMER);
+        }
+    }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case TIMER:
+                    dismissProgress();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
 }
